@@ -174,11 +174,20 @@
 		},
 		"current": "目前"
 	},
-	"contextCondense": {
-		"title": "上下文已壓縮",
-		"condensing": "正在壓縮上下文...",
-		"errorHeader": "壓縮上下文失敗",
-		"tokens": "Token"
+	"contextManagement": {
+		"tokens": "Token",
+		"condensation": {
+			"title": "上下文已壓縮",
+			"inProgress": "正在壓縮上下文...",
+			"errorHeader": "壓縮上下文失敗"
+		},
+		"truncation": {
+			"title": "上下文已截斷",
+			"inProgress": "正在截斷上下文...",
+			"messagesRemoved": "已移除 {{count}} 則訊息",
+			"messagesRemoved_other": "已移除 {{count}} 則訊息",
+			"description": "為保持在上下文視窗限制內，已從對話中移除較舊的訊息。與壓縮相比，這是一種快速但上下文保留較少的方法。"
+		}
 	},
 	"instructions": {
 		"wantsToFetch": "Roo 想要取得詳細指示以協助目前工作"
@@ -305,7 +314,8 @@
 		"triggerLabelAll": "YOLO"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} 已發布",
+		"title": "Roo Code {{version}} 已發布",
+		"support": "請在 <githubLink>GitHub</githubLink> 上為我們按星支持 Roo Code。",
 		"stealthModel": {
 			"feature": "<bold>限時免費隱形模型</bold> - Code Supernova：現已升級為 <bold>1M Token 上下文視窗</bold>！一個支援圖像輸入的多功能代理程式編程模型，透過 Roo Code Cloud 提供。",
 			"note": "(注意：提示和完成會被模型創建者記錄並用於改進模型)",
@@ -324,8 +334,7 @@
 			"description": "代理在雲端協同工作，可從網頁或透過 Slack 觸發。",
 			"tryButton": "試用雲端代理"
 		},
-		"careers": "此外，<careersLink>我們正在招募！</careersLink>",
-		"socialLinks": "在 <xLink>X</xLink>、<discordLink>Discord</discordLink> 或 <redditLink>r/RooCode</redditLink> 上關注我們 🚀"
+		"careers": "此外，<careersLink>我們正在招募！</careersLink>"
 	},
 	"reasoning": {
 		"thinking": "思考中",
@@ -351,13 +360,25 @@
 		"sessionStarted": "瀏覽器工作階段已啟動",
 		"actions": {
 			"title": "瀏覽器動作：",
+			"launched": "瀏覽器已啟動",
 			"launch": "在 {{url}} 啟動瀏覽器",
+			"clicked": "點選位置: {{coordinate}}",
 			"click": "點選 ({{coordinate}})",
+			"typed": "輸入: {{text}}",
 			"type": "輸入「{{text}}」",
+			"pressed": "已按下 {{key}}",
 			"press": "按下 {{key}}",
+			"scrolledDown": "已向下捲動",
 			"scrollDown": "向下捲動",
+			"scrolledUp": "已向上捲動",
 			"scrollUp": "向上捲動",
+			"hovered": "懸停位置: {{coordinate}}",
 			"hover": "懸停 ({{coordinate}})",
+			"resized": "大小已變更: {{size}}",
+			"resize": "調整大小為 {{size}}",
+			"screenshotSaved": "螢幕擷圖已儲存",
+			"screenshot": "將螢幕擷圖儲存至 {{path}}",
+			"closed": "瀏覽器已關閉",
 			"close": "關閉瀏覽器"
 		}
 	},

@@ -283,11 +283,20 @@
 		"thinking": "Réflexion",
 		"seconds": "{{count}}s"
 	},
-	"contextCondense": {
-		"title": "Contexte condensé",
-		"condensing": "Condensation du contexte...",
-		"errorHeader": "Échec de la condensation du contexte",
-		"tokens": "tokens"
+	"contextManagement": {
+		"tokens": "tokens",
+		"condensation": {
+			"title": "Contexte condensé",
+			"inProgress": "Condensation du contexte...",
+			"errorHeader": "Échec de la condensation du contexte"
+		},
+		"truncation": {
+			"title": "Contexte tronqué",
+			"inProgress": "Troncature du contexte...",
+			"messagesRemoved": "{{count}} message supprimé",
+			"messagesRemoved_other": "{{count}} messages supprimés",
+			"description": "Les messages plus anciens ont été supprimés de la conversation pour rester dans la limite de la fenêtre de contexte. C'est une approche rapide mais moins conservatrice du contexte par rapport à la condensation."
+		}
 	},
 	"followUpSuggest": {
 		"copyToInput": "Copier vers l'entrée (ou Shift + clic)",
@@ -295,7 +304,8 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} est sortie",
+		"title": "Roo Code {{version}} est sortie",
+		"support": "Soutiens Roo Code en nous donnant une étoile sur <githubLink>GitHub</githubLink>.",
 		"stealthModel": {
 			"feature": "<bold>Modèle stealth GRATUIT pour une durée limitée</bold> - Code Supernova : Maintenant amélioré avec une <bold>fenêtre de contexte de 1M tokens</bold> ! Un modèle de codage agentique polyvalent qui prend en charge les entrées d'images, accessible via Roo Code Cloud.",
 			"note": "(Note : les prompts et complétions sont enregistrés par le créateur du modèle et utilisés pour l'améliorer)",
@@ -314,8 +324,7 @@
 			"description": "Les agents travaillent ensemble dans le cloud et peuvent être déclenchés depuis le web ou via Slack.",
 			"tryButton": "Essayer les Agents Cloud"
 		},
-		"careers": "Aussi, <careersLink>on recrute !</careersLink>",
-		"socialLinks": "Rejoins-nous sur <xLink>X</xLink>, <discordLink>Discord</discordLink>, ou <redditLink>r/RooCode</redditLink> 🚀"
+		"careers": "Aussi, <careersLink>on recrute !</careersLink>"
 	},
 	"browser": {
 		"session": "Session du navigateur",
@@ -332,13 +341,25 @@
 		"sessionStarted": "Session de navigateur démarrée",
 		"actions": {
 			"title": "Action du navigateur : ",
+			"launched": "Navigateur lancé",
 			"launch": "Lancer le navigateur sur {{url}}",
+			"clicked": "Cliqué sur : {{coordinate}}",
 			"click": "Cliquer ({{coordinate}})",
+			"typed": "Saisi : {{text}}",
 			"type": "Saisir \"{{text}}\"",
+			"pressed": "Appuyé sur : {{key}}",
 			"press": "Appuyer sur {{key}}",
+			"scrolledDown": "Défilé vers le bas",
 			"scrollDown": "Défiler vers le bas",
+			"scrolledUp": "Défilé vers le haut",
 			"scrollUp": "Défiler vers le haut",
+			"hovered": "Survolé : {{coordinate}}",
 			"hover": "Survoler ({{coordinate}})",
+			"resized": "Redimensionné à : {{size}}",
+			"resize": "Redimensionner à {{size}}",
+			"screenshotSaved": "Capture d'écran enregistrée",
+			"screenshot": "Enregistrer une capture d'écran dans {{path}}",
+			"closed": "Navigateur fermé",
 			"close": "Fermer le navigateur"
 		}
 	},

@@ -283,11 +283,20 @@
 		"thinking": "विचार कर रहा है",
 		"seconds": "{{count}} सेकंड"
 	},
-	"contextCondense": {
-		"title": "संदर्भ संक्षिप्त किया गया",
-		"condensing": "संदर्भ संघनित कर रहा है...",
-		"errorHeader": "संदर्भ संघनित करने में विफल",
-		"tokens": "टोकन"
+	"contextManagement": {
+		"tokens": "टोकन",
+		"condensation": {
+			"title": "संदर्भ संक्षिप्त किया गया",
+			"inProgress": "संदर्भ संघनित कर रहा है...",
+			"errorHeader": "संदर्भ संघनित करने में विफल"
+		},
+		"truncation": {
+			"title": "संदर्भ छोटा किया गया",
+			"inProgress": "संदर्भ छोटा कर रहा है...",
+			"messagesRemoved": "{{count}} संदेश हटाया गया",
+			"messagesRemoved_other": "{{count}} संदेश हटाए गए",
+			"description": "संदर्भ विंडो सीमा के भीतर रहने के लिए बातचीत से पुराने संदेश हटा दिए गए। संघनन की तुलना में यह एक तेज़ लेकिन कम संदर्भ-संरक्षित दृष्टिकोण है।"
+		}
 	},
 	"followUpSuggest": {
 		"copyToInput": "इनपुट में कॉपी करें (या Shift + क्लिक)",
@@ -295,7 +304,8 @@
 		"countdownDisplay": "{{count}}सेकंड"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} रिलीज़ हुआ",
+		"title": "Roo Code {{version}} रिलीज़ हुआ",
+		"support": "कृपया <githubLink>GitHub</githubLink> पर हमें स्टार देकर Roo Code का समर्थन करें।",
 		"stealthModel": {
 			"feature": "<bold>सीमित समय के लिए मुफ़्त स्टेल्थ मॉडल</bold> - Code Supernova: अब <bold>1M Token संदर्भ विंडो</bold> के साथ अपग्रेड हुआ! एक बहुमुखी एजेंटिक कोडिंग मॉडल जो छवि इनपुट का समर्थन करता है, Roo Code Cloud के माध्यम से उपलब्ध।",
 			"note": "(नोट: प्रॉम्प्ट्स और कम्प्लीशन्स मॉडल निर्माता द्वारा लॉग किए जाते हैं और मॉडल को बेहतर बनाने के लिए उपयोग किए जाते हैं)",
@@ -314,8 +324,7 @@
 			"description": "एजेंट क्लाउड में एक साथ काम करते हैं और web या Slack के माध्यम से ट्रिगर किए जा सकते हैं।",
 			"tryButton": "क्लाउड एजेंट आज़माएं"
 		},
-		"careers": "साथ ही, <careersLink>हम भर्ती कर रहे हैं!</careersLink>",
-		"socialLinks": "<xLink>X</xLink>, <discordLink>Discord</discordLink>, या <redditLink>r/RooCode</redditLink> पर हमसे जुड़ें 🚀"
+		"careers": "साथ ही, <careersLink>हम भर्ती कर रहे हैं!</careersLink>"
 	},
 	"browser": {
 		"session": "ब्राउज़र सत्र",
@@ -332,13 +341,25 @@
 		"sessionStarted": "ब्राउज़र सत्र शुरू हुआ",
 		"actions": {
 			"title": "ब्राउज़र क्रिया: ",
+			"launched": "ब्राउज़र लॉन्च हुआ",
 			"launch": "{{url}} पर ब्राउज़र लॉन्च करें",
+			"clicked": "क्लिक किया गया ({{coordinate}})",
 			"click": "क्लिक करें ({{coordinate}})",
+			"typed": "टाइप किया गया: {{text}}",
 			"type": "टाइप करें \"{{text}}\"",
+			"pressed": "दबाया गया: {{key}}",
 			"press": "{{key}} दबाएँ",
+			"scrolledDown": "नीचे स्क्रॉल किया गया",
 			"scrollDown": "नीचे स्क्रॉल करें",
+			"scrolledUp": "ऊपर स्क्रॉल किया गया",
 			"scrollUp": "ऊपर स्क्रॉल करें",
+			"hovered": "होवर किया गया ({{coordinate}})",
 			"hover": "होवर करें ({{coordinate}})",
+			"resized": "आकार बदला गया: {{size}}",
+			"resize": "आकार बदलें {{size}}",
+			"screenshotSaved": "स्क्रीनशॉट सहेजा गया",
+			"screenshot": "स्क्रीनशॉट को {{path}} में सहेजें",
+			"closed": "ब्राउज़र बंद किया गया",
 			"close": "ब्राउज़र बंद करें"
 		}
 	},

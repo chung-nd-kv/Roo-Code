@@ -284,11 +284,20 @@
 		"thinking": "Đang suy nghĩ",
 		"seconds": "{{count}} giây"
 	},
-	"contextCondense": {
-		"title": "Ngữ cảnh đã tóm tắt",
-		"condensing": "Đang cô đọng ngữ cảnh...",
-		"errorHeader": "Không thể cô đọng ngữ cảnh",
-		"tokens": "token"
+	"contextManagement": {
+		"tokens": "token",
+		"condensation": {
+			"title": "Ngữ cảnh đã tóm tắt",
+			"inProgress": "Đang cô đọng ngữ cảnh...",
+			"errorHeader": "Không thể cô đọng ngữ cảnh"
+		},
+		"truncation": {
+			"title": "Ngữ cảnh đã cắt bớt",
+			"inProgress": "Đang cắt bớt ngữ cảnh...",
+			"messagesRemoved": "{{count}} tin nhắn đã xóa",
+			"messagesRemoved_other": "{{count}} tin nhắn đã xóa",
+			"description": "Các tin nhắn cũ hơn đã bị xóa khỏi cuộc trò chuyện để giữ trong giới hạn cửa sổ ngữ cảnh. Đây là cách tiếp cận nhanh nhưng ít bảo toàn ngữ cảnh hơn so với cô đọng."
+		}
 	},
 	"followUpSuggest": {
 		"copyToInput": "Sao chép vào ô nhập liệu (hoặc Shift + nhấp chuột)",
@@ -296,7 +305,8 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} Đã phát hành",
+		"title": "Roo Code {{version}} Đã phát hành",
+		"support": "Hãy ủng hộ Roo Code bằng cách gắn sao cho chúng tôi trên <githubLink>GitHub</githubLink>.",
 		"stealthModel": {
 			"feature": "<bold>Mô hình stealth MIỄN PHÍ có thời hạn</bold> - Code Supernova: Hiện đã được nâng cấp với <bold>cửa sổ ngữ cảnh 1M token</bold>! Một mô hình lập trình agentic đa năng hỗ trợ đầu vào hình ảnh, có sẵn qua Roo Code Cloud.",
 			"note": "(Lưu ý: các prompt và completion được ghi lại bởi người tạo mô hình và được sử dụng để cải thiện mô hình)",
@@ -315,8 +325,7 @@
 			"description": "Các agent làm việc cùng nhau trên đám mây và có thể được kích hoạt từ web hoặc qua Slack.",
 			"tryButton": "Dùng thử Agents trên Cloud"
 		},
-		"careers": "Ngoài ra, <careersLink>chúng tôi đang tuyển dụng!</careersLink>",
-		"socialLinks": "Tham gia với chúng tôi trên <xLink>X</xLink>, <discordLink>Discord</discordLink>, hoặc <redditLink>r/RooCode</redditLink> 🚀"
+		"careers": "Ngoài ra, <careersLink>chúng tôi đang tuyển dụng!</careersLink>"
 	},
 	"browser": {
 		"session": "Phiên trình duyệt",
@@ -333,13 +342,25 @@
 		"sessionStarted": "Phiên trình duyệt đã bắt đầu",
 		"actions": {
 			"title": "Hành động trình duyệt: ",
+			"launched": "Trình duyệt đã khởi chạy",
 			"launch": "Khởi chạy trình duyệt tại {{url}}",
+			"clicked": "Đã nhấp ({{coordinate}})",
 			"click": "Nhấp ({{coordinate}})",
+			"typed": "Đã gõ: {{text}}",
 			"type": "Gõ \"{{text}}\"",
+			"pressed": "Đã nhấn: {{key}}",
 			"press": "Nhấn {{key}}",
+			"scrolledDown": "Đã cuộn xuống",
 			"scrollDown": "Cuộn xuống",
+			"scrolledUp": "Đã cuộn lên",
 			"scrollUp": "Cuộn lên",
+			"hovered": "Đã di chuột ({{coordinate}})",
 			"hover": "Di chuột ({{coordinate}})",
+			"resized": "Đã thay đổi kích thước: {{size}}",
+			"resize": "Thay đổi kích thước thành {{size}}",
+			"screenshotSaved": "Ảnh chụp màn hình đã được lưu",
+			"screenshot": "Lưu ảnh chụp màn hình vào {{path}}",
+			"closed": "Trình duyệt đã đóng",
 			"close": "Đóng trình duyệt"
 		}
 	},

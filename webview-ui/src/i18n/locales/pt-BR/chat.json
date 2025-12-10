@@ -283,11 +283,20 @@
 		"thinking": "Pensando",
 		"seconds": "{{count}}s"
 	},
-	"contextCondense": {
-		"title": "Contexto condensado",
-		"condensing": "Condensando contexto...",
-		"errorHeader": "Falha ao condensar contexto",
-		"tokens": "tokens"
+	"contextManagement": {
+		"tokens": "tokens",
+		"condensation": {
+			"title": "Contexto condensado",
+			"inProgress": "Condensando contexto...",
+			"errorHeader": "Falha ao condensar contexto"
+		},
+		"truncation": {
+			"title": "Contexto truncado",
+			"inProgress": "Truncando contexto...",
+			"messagesRemoved": "{{count}} mensagem removida",
+			"messagesRemoved_other": "{{count}} mensagens removidas",
+			"description": "Mensagens mais antigas foram removidas da conversa para permanecer dentro do limite da janela de contexto. Esta é uma abordagem rápida, mas menos preservadora de contexto em comparação com a condensação."
+		}
 	},
 	"followUpSuggest": {
 		"copyToInput": "Copiar para entrada (ou Shift + clique)",
@@ -295,7 +304,8 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} Lançado",
+		"title": "Roo Code {{version}} Lançado",
+		"support": "Apoie o Roo Code nos dando uma estrela no <githubLink>GitHub</githubLink>.",
 		"stealthModel": {
 			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Code Supernova: Agora atualizado com uma <bold>janela de contexto de 1M tokens</bold>! Um modelo de codificação agêntica versátil que suporta entradas de imagem, acessível através do Roo Code Cloud.",
 			"note": "(Nota: prompts e completações são registrados pelo criador do modelo e usados para melhorá-lo)",
@@ -314,8 +324,7 @@
 			"description": "Os agentes trabalham juntos na nuvem e podem ser acionados a partir da web ou por meio do Slack.",
 			"tryButton": "Experimentar Agentes em Nuvem"
 		},
-		"careers": "Além disso, <careersLink>estamos contratando!</careersLink>",
-		"socialLinks": "Junte-se a nós no <xLink>X</xLink>, <discordLink>Discord</discordLink>, ou <redditLink>r/RooCode</redditLink> 🚀"
+		"careers": "Além disso, <careersLink>estamos contratando!</careersLink>"
 	},
 	"browser": {
 		"session": "Sessão do Navegador",
@@ -332,13 +341,25 @@
 		"sessionStarted": "Sessão do navegador iniciada",
 		"actions": {
 			"title": "Ação do navegador: ",
+			"launched": "Navegador iniciado",
 			"launch": "Iniciar navegador em {{url}}",
+			"clicked": "Clicado em: {{coordinate}}",
 			"click": "Clique ({{coordinate}})",
+			"typed": "Digitado: {{text}}",
 			"type": "Digitar \"{{text}}\"",
+			"pressed": "Pressionado: {{key}}",
 			"press": "Pressione {{key}}",
+			"scrolledDown": "Rolado para baixo",
 			"scrollDown": "Rolar para baixo",
+			"scrolledUp": "Rolado para cima",
 			"scrollUp": "Rolar para cima",
+			"hovered": "Pairado em: {{coordinate}}",
 			"hover": "Pairar ({{coordinate}})",
+			"resized": "Redimensionado para: {{size}}",
+			"resize": "Redimensionar para {{size}}",
+			"screenshotSaved": "Captura de tela salva",
+			"screenshot": "Salvar captura de tela em {{path}}",
+			"closed": "Navegador fechado",
 			"close": "Fechar navegador"
 		}
 	},

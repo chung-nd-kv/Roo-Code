@@ -283,11 +283,20 @@
 		"thinking": "Denke nach",
 		"seconds": "{{count}}s"
 	},
-	"contextCondense": {
-		"title": "Kontext komprimiert",
-		"condensing": "Kontext wird komprimiert...",
-		"errorHeader": "Kontext konnte nicht komprimiert werden",
-		"tokens": "Tokens"
+	"contextManagement": {
+		"tokens": "Tokens",
+		"condensation": {
+			"title": "Kontext komprimiert",
+			"inProgress": "Kontext wird komprimiert...",
+			"errorHeader": "Kontext konnte nicht komprimiert werden"
+		},
+		"truncation": {
+			"title": "Kontext gekürzt",
+			"inProgress": "Kontext wird gekürzt...",
+			"messagesRemoved": "{{count}} Nachricht entfernt",
+			"messagesRemoved_other": "{{count}} Nachrichten entfernt",
+			"description": "Ältere Nachrichten wurden aus der Konversation entfernt, um innerhalb des Kontextfenster-Limits zu bleiben. Dies ist ein schnellerer, aber weniger kontexterhaltender Ansatz im Vergleich zur Komprimierung."
+		}
 	},
 	"followUpSuggest": {
 		"copyToInput": "In Eingabefeld kopieren (oder Shift + Klick)",
@@ -295,7 +304,8 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} veröffentlicht",
+		"title": "Roo Code {{version}} veröffentlicht",
+		"support": "Bitte unterstütze Roo Code, indem du uns auf <githubLink>GitHub</githubLink> einen Stern gibst.",
 		"stealthModel": {
 			"feature": "<bold>Zeitlich begrenztes KOSTENLOSES Stealth-Modell</bold> - Code Supernova: Jetzt mit einem <bold>1M Token Kontextfenster</bold> erweitert! Ein vielseitiges agentisches Coding-Modell, das Bildeingaben unterstützt und über Roo Code Cloud zugänglich ist.",
 			"note": "(Hinweis: Prompts und Vervollständigungen werden vom Modellersteller protokolliert und zur Verbesserung des Modells verwendet)",
@@ -314,8 +324,7 @@
 			"description": "Die Agenten arbeiten zusammen in der Cloud und können vom Web oder über Slack ausgelöst werden.",
 			"tryButton": "Probiere Cloud-Agenten aus"
 		},
-		"careers": "Außerdem, <careersLink>wir stellen ein!</careersLink>",
-		"socialLinks": "Folge uns auf <xLink>X</xLink>, <discordLink>Discord</discordLink> oder <redditLink>r/RooCode</redditLink> 🚀"
+		"careers": "Außerdem, <careersLink>wir stellen ein!</careersLink>"
 	},
 	"browser": {
 		"session": "Browser-Sitzung",
@@ -332,13 +341,25 @@
 		"sessionStarted": "Browser-Sitzung gestartet",
 		"actions": {
 			"title": "Browser-Aktion: ",
+			"launched": "Browser gestartet",
 			"launch": "Browser starten auf {{url}}",
+			"clicked": "Geklickt auf: {{coordinate}}",
 			"click": "Klicken ({{coordinate}})",
+			"typed": "Eingegeben: {{text}}",
 			"type": "Eingeben \"{{text}}\"",
+			"pressed": "{{key}} gedrückt",
 			"press": "{{key}} drücken",
+			"scrolledDown": "Nach unten gescrollt",
 			"scrollDown": "Nach unten scrollen",
+			"scrolledUp": "Nach oben gescrollt",
 			"scrollUp": "Nach oben scrollen",
+			"hovered": "Gehovered auf: {{coordinate}}",
 			"hover": "Hover ({{coordinate}})",
+			"resized": "Größe geändert auf: {{size}}",
+			"resize": "Größe ändern auf {{size}}",
+			"screenshotSaved": "Screenshot gespeichert",
+			"screenshot": "Screenshot speichern unter {{path}}",
+			"closed": "Browser geschlossen",
 			"close": "Browser schließen"
 		}
 	},

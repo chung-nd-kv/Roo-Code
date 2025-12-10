@@ -281,7 +281,8 @@
 		"triggerLabelAll": "YOLO"
 	},
 	"announcement": {
-		"title": "🎉 Выпущен Roo Code {{version}}",
+		"title": "Выпущен Roo Code {{version}}",
+		"support": "Поддержите Roo Code, поставив нам звезду на <githubLink>GitHub</githubLink>.",
 		"stealthModel": {
 			"feature": "<bold>Бесплатная скрытая модель на ограниченное время</bold> - Code Supernova: Теперь обновлена до <bold>контекстного окна 1M токенов</bold>! Универсальная модель агентного программирования, поддерживающая ввод изображений, доступная через Roo Code Cloud.",
 			"note": "(Примечание: промпты и дополнения записываются создателем модели и используются для её улучшения)",
@@ -300,18 +301,26 @@
 			"description": "Агенты работают вместе в облаке и могут быть запущены из веб-интерфейса или через Slack.",
 			"tryButton": "Попробовать облачных агентов"
 		},
-		"careers": "Кроме того, <careersLink>мы нанимаем!</careersLink>",
-		"socialLinks": "Присоединяйтесь к нам в <xLink>X</xLink>, <discordLink>Discord</discordLink>, или <redditLink>r/RooCode</redditLink> 🚀"
+		"careers": "Кроме того, <careersLink>мы нанимаем!</careersLink>"
 	},
 	"reasoning": {
 		"thinking": "Обдумывание",
 		"seconds": "{{count}}с"
 	},
-	"contextCondense": {
-		"title": "Контекст сжат",
-		"condensing": "Сжатие контекста...",
-		"errorHeader": "Не удалось сжать контекст",
-		"tokens": "токены"
+	"contextManagement": {
+		"tokens": "токены",
+		"condensation": {
+			"title": "Контекст сжат",
+			"inProgress": "Сжатие контекста...",
+			"errorHeader": "Не удалось сжать контекст"
+		},
+		"truncation": {
+			"title": "Контекст усечён",
+			"inProgress": "Усечение контекста...",
+			"messagesRemoved": "{{count}} сообщение удалено",
+			"messagesRemoved_other": "{{count}} сообщений удалено",
+			"description": "Более старые сообщения были удалены из разговора, чтобы остаться в пределах контекстного окна. Это быстрый, но менее сохраняющий контекст подход по сравнению со сжатием."
+		}
 	},
 	"followUpSuggest": {
 		"copyToInput": "Скопировать во ввод (то же, что shift + клик)",
@@ -333,13 +342,25 @@
 		"sessionStarted": "Сессия браузера запущена",
 		"actions": {
 			"title": "Действие браузера: ",
+			"launched": "Браузер открыт",
 			"launch": "Открыть браузер по адресу {{url}}",
+			"clicked": "Клик в: {{coordinate}}",
 			"click": "Клик ({{coordinate}})",
+			"typed": "Введено: {{text}}",
 			"type": "Ввести \"{{text}}\"",
+			"pressed": "Нажато: {{key}}",
 			"press": "Нажать {{key}}",
+			"scrolledDown": "Прокручено вниз",
 			"scrollDown": "Прокрутить вниз",
+			"scrolledUp": "Прокручено вверх",
 			"scrollUp": "Прокрутить вверх",
+			"hovered": "Наведено в: {{coordinate}}",
 			"hover": "Навести ({{coordinate}})",
+			"resized": "Размер изменен на: {{size}}",
+			"resize": "Изменить размер на {{size}}",
+			"screenshotSaved": "Снимок экрана сохранён",
+			"screenshot": "Сохранить снимок экрана в {{path}}",
+			"closed": "Браузер закрыт",
 			"close": "Закрыть браузер"
 		}
 	},
