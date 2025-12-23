@@ -100,7 +100,13 @@ export class RooHandler extends BaseOpenAiCompatibleProvider<string> {
 			model,
 			max_tokens,
 			temperature,
-			messages: [{ role: "system", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
+			// Enable mergeToolResultText to merge environment_details and other text content
+			// after tool_results into the last tool message. This prevents reasoning/thinking
+			// models from dropping reasoning_content when they see a user message after tool results.
+			messages: [
+				{ role: "system", content: systemPrompt },
+				...convertToOpenAiMessages(messages, { mergeToolResultText: true }),
+			],
 			stream: true,
 			stream_options: { include_usage: true },
 			...(reasoning && { reasoning }),
@@ -179,7 +185,10 @@ export class RooHandler extends BaseOpenAiCompatibleProvider<string> {
 					if (deltaWithReasoning.reasoning_details && Array.isArray(deltaWithReasoning.reasoning_details)) {
 						for (const detail of deltaWithReasoning.reasoning_details) {
 							const index = detail.index ?? 0
-							const key = `${detail.type}-${index}`
+							// Use id as key when available to merge chunks that share the same reasoning block id
+							// This ensures that reasoning.summary and reasoning.encrypted chunks with the same id
+							// are merged into a single object, matching the provider's expected format
+							const key = detail.id ?? `${detail.type}-${index}`
 							const existing = reasoningDetailsAccumulator.get(key)
 
 							if (existing) {
@@ -194,6 +203,8 @@ export class RooHandler extends BaseOpenAiCompatibleProvider<string> {
 									existing.data = (existing.data || "") + detail.data
 								}
 								// Update other fields if provided
+								// Note: Don't update type - keep original type (e.g., reasoning.summary)
+								// even when encrypted data chunks arrive with type reasoning.encrypted
 								if (detail.id !== undefined) existing.id = detail.id
 								if (detail.format !== undefined) existing.format = detail.format
 								if (detail.signature !== undefined) existing.signature = detail.signature

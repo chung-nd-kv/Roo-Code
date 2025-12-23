@@ -11,6 +11,14 @@ export interface ConvertToOpenAiMessagesOptions {
 	 * This allows callers to declare provider-specific ID format requirements.
 	 */
 	normalizeToolCallId?: (id: string) => string
+	/**
+	 * If true, merge text content after tool_results into the last tool message
+	 * instead of creating a separate user message. This is critical for providers
+	 * with reasoning/thinking models (like DeepSeek-reasoner, GLM-4.7, etc.) where
+	 * a user message after tool results causes the model to drop all previous
+	 * reasoning_content. Default is false for backward compatibility.
+	 */
+	mergeToolResultText?: boolean
 }
 
 export function convertToOpenAiMessages(
@@ -95,18 +103,40 @@ export function convertToOpenAiMessages(
 
 				// Process non-tool messages
 				if (nonToolMessages.length > 0) {
-					openAiMessages.push({
-						role: "user",
-						content: nonToolMessages.map((part) => {
-							if (part.type === "image") {
-								return {
-									type: "image_url",
-									image_url: { url: `data:${part.source.media_type};base64,${part.source.data}` },
+					// Check if we should merge text into the last tool message
+					// This is critical for reasoning/thinking models where a user message
+					// after tool results causes the model to drop all previous reasoning_content
+					const hasOnlyTextContent = nonToolMessages.every((part) => part.type === "text")
+					const hasToolMessages = toolMessages.length > 0
+					const shouldMergeIntoToolMessage =
+						options?.mergeToolResultText && hasToolMessages && hasOnlyTextContent
+
+					if (shouldMergeIntoToolMessage) {
+						// Merge text content into the last tool message
+						const lastToolMessage = openAiMessages[
+							openAiMessages.length - 1
+						] as OpenAI.Chat.ChatCompletionToolMessageParam
+						if (lastToolMessage?.role === "tool") {
+							const additionalText = nonToolMessages
+								.map((part) => (part as Anthropic.TextBlockParam).text)
+								.join("\n")
+							lastToolMessage.content = `${lastToolMessage.content}\n\n${additionalText}`
+						}
+					} else {
+						// Standard behavior: add user message with text/image content
+						openAiMessages.push({
+							role: "user",
+							content: nonToolMessages.map((part) => {
+								if (part.type === "image") {
+									return {
+										type: "image_url",
+										image_url: { url: `data:${part.source.media_type};base64,${part.source.data}` },
+									}
 								}
-							}
-							return { type: "text", text: part.text }
-						}),
-					})
+								return { type: "text", text: part.text }
+							}),
+						})
+					}
 				}
 			} else if (anthropicMessage.role === "assistant") {
 				const { nonToolMessages, toolMessages } = anthropicMessage.content.reduce<{
@@ -150,16 +180,28 @@ export function convertToOpenAiMessages(
 
 				// Check if the message has reasoning_details (used by Gemini 3, etc.)
 				const messageWithDetails = anthropicMessage as any
-				const baseMessage: OpenAI.Chat.ChatCompletionAssistantMessageParam = {
+
+				// Build message with reasoning_details BEFORE tool_calls to preserve
+				// the order expected by providers like Roo. Property order matters
+				// when sending messages back to some APIs.
+				const baseMessage: OpenAI.Chat.ChatCompletionAssistantMessageParam & { reasoning_details?: any[] } = {
 					role: "assistant",
 					content,
-					// Cannot be an empty array. API expects an array with minimum length 1, and will respond with an error if it's empty
-					tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
 				}
 
-				// Preserve reasoning_details if present (will be processed by provider if needed)
+				// Add reasoning_details first (before tool_calls) to preserve provider-expected order
+				// Strip the id field from each reasoning detail as it's only used internally for accumulation
 				if (messageWithDetails.reasoning_details && Array.isArray(messageWithDetails.reasoning_details)) {
-					;(baseMessage as any).reasoning_details = messageWithDetails.reasoning_details
+					baseMessage.reasoning_details = messageWithDetails.reasoning_details.map((detail: any) => {
+						const { id, ...rest } = detail
+						return rest
+					})
+				}
+
+				// Add tool_calls after reasoning_details
+				// Cannot be an empty array. API expects an array with minimum length 1, and will respond with an error if it's empty
+				if (tool_calls.length > 0) {
+					baseMessage.tool_calls = tool_calls
 				}
 
 				openAiMessages.push(baseMessage)
