@@ -70,7 +70,7 @@ describe("resolveToolProtocol", () => {
 
 		it("should use native for OpenAI compatible provider", () => {
 			const settings: ProviderSettings = {
-				apiProvider: "openai-compatible",
+				apiProvider: "openai",
 			}
 			const result = resolveToolProtocol(settings, openAiModelInfoSaneDefaults)
 			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
@@ -162,7 +162,7 @@ describe("resolveToolProtocol", () => {
 		it("should respect XML user preference for OpenAI Compatible provider", () => {
 			const settings: ProviderSettings = {
 				toolProtocol: "xml",
-				apiProvider: "openai-compatible",
+				apiProvider: "openai",
 			}
 			const result = resolveToolProtocol(settings)
 			expect(result).toBe(TOOL_PROTOCOL.XML)
@@ -171,7 +171,7 @@ describe("resolveToolProtocol", () => {
 		it("should respect Native user preference for OpenAI Compatible provider", () => {
 			const settings: ProviderSettings = {
 				toolProtocol: "native",
-				apiProvider: "openai-compatible",
+				apiProvider: "openai",
 			}
 			const result = resolveToolProtocol(settings)
 			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
@@ -179,7 +179,7 @@ describe("resolveToolProtocol", () => {
 
 		it("should default to Native when no preference for OpenAI Compatible provider", () => {
 			const settings: ProviderSettings = {
-				apiProvider: "openai-compatible",
+				apiProvider: "openai",
 			}
 			const result = resolveToolProtocol(settings)
 			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
@@ -214,7 +214,7 @@ describe("resolveToolProtocol", () => {
 		it("should still honor locked protocol over user preference for openai-compatible", () => {
 			const settings: ProviderSettings = {
 				toolProtocol: "xml",
-				apiProvider: "openai-compatible",
+				apiProvider: "openai",
 			}
 			// lockedProtocol takes precedence
 			const result = resolveToolProtocol(settings, undefined, "native")

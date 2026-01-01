@@ -415,7 +415,7 @@ const ApiOptions = ({
 
 	// Show the tool protocol selector only for OpenAI Compatible and LiteLLM providers
 	// These providers may need XML protocol for legacy compatibility
-	const showToolProtocolSelector = selectedProvider === "openai-compatible" || selectedProvider === "litellm"
+	const showToolProtocolSelector = selectedProvider === "openai" || selectedProvider === "litellm"
 
 	// Convert providers to SearchableSelect options
 	const providerOptions = useMemo(() => {
