@@ -12,24 +12,32 @@ type ApiMessageForDetection = Anthropic.MessageParam & {
 }
 
 /**
+ * Providers that still support XML tool protocol selection.
+ * For legacy compatibility, "openai-compatible" (OpenAI Compatible) and "litellm" (LiteLLM)
+ * providers allow users to choose between XML and Native protocols.
+ */
+const XML_PROTOCOL_SUPPORTED_PROVIDERS = ["openai-compatible", "litellm"] as const
+
+/**
  * Resolve the effective tool protocol.
  *
- * **Deprecation Note (XML Protocol):**
- * XML tool protocol has been deprecated. All models now use Native tool calling.
- * User/profile preferences (`providerSettings.toolProtocol`) and model defaults
- * (`modelInfo.defaultToolProtocol`) are ignored.
+ * **XML Protocol Support:**
+ * XML tool protocol is deprecated for most providers. However, for legacy compatibility,
+ * "openai-compatible" (OpenAI Compatible) and "litellm" (LiteLLM) providers still allow users
+ * to select XML protocol via settings.
  *
  * Precedence:
  * 1. Locked Protocol (task-level lock for resumed tasks - highest priority)
- * 2. Native (always, for all new tasks)
+ * 2. User Preference (for OpenAI Compatible and LiteLLM providers only)
+ * 3. Native (default for all other providers)
  *
- * @param _providerSettings - The provider settings (toolProtocol field is ignored)
+ * @param providerSettings - The provider settings including apiProvider and toolProtocol
  * @param _modelInfo - Unused, kept for API compatibility
  * @param lockedProtocol - Optional task-locked protocol that takes absolute precedence
  * @returns The resolved tool protocol (either "xml" or "native")
  */
 export function resolveToolProtocol(
-	_providerSettings: ProviderSettings,
+	providerSettings: ProviderSettings,
 	_modelInfo?: unknown,
 	lockedProtocol?: ToolProtocol,
 ): ToolProtocol {
@@ -39,8 +47,15 @@ export function resolveToolProtocol(
 		return lockedProtocol
 	}
 
-	// 2. Always return Native protocol for new tasks
-	// All models now support native tools; XML is deprecated
+	// 2. For OpenAI Compatible and LiteLLM providers, respect user preference
+	const provider = providerSettings.apiProvider
+	if (provider && (XML_PROTOCOL_SUPPORTED_PROVIDERS as readonly string[]).includes(provider)) {
+		if (providerSettings.toolProtocol) {
+			return providerSettings.toolProtocol
+		}
+	}
+
+	// 3. Default to Native protocol for all other providers
 	return TOOL_PROTOCOL.NATIVE
 }
 
