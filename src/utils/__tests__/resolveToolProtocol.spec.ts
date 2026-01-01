@@ -6,14 +6,16 @@ import type { Anthropic } from "@anthropic-ai/sdk"
 
 describe("resolveToolProtocol", () => {
 	/**
-	 * XML Protocol Deprecation:
+	 * XML Protocol Support:
 	 *
-	 * XML tool protocol has been fully deprecated. All models now use Native
-	 * tool calling. User preferences and model defaults are ignored.
+	 * XML tool protocol is deprecated for most providers. However, for legacy
+	 * compatibility, "openai-compatible" (OpenAI Compatible) and "litellm" (LiteLLM)
+	 * providers still allow users to select XML protocol via settings.
 	 *
 	 * Precedence:
 	 * 1. Locked Protocol (for resumed tasks that used XML)
-	 * 2. Native (always, for all new tasks)
+	 * 2. User Preference (for OpenAI Compatible and LiteLLM providers only)
+	 * 3. Native (default for all other providers)
 	 */
 
 	describe("Locked Protocol (Precedence Level 0 - Highest Priority)", () => {
@@ -68,7 +70,7 @@ describe("resolveToolProtocol", () => {
 
 		it("should use native for OpenAI compatible provider", () => {
 			const settings: ProviderSettings = {
-				apiProvider: "openai",
+				apiProvider: "openai-compatible",
 			}
 			const result = resolveToolProtocol(settings, openAiModelInfoSaneDefaults)
 			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
@@ -153,6 +155,80 @@ describe("resolveToolProtocol", () => {
 			}
 			const result = resolveToolProtocol(settings)
 			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
+		})
+	})
+
+	describe("XML Protocol Support for OpenAI Compatible and LiteLLM Providers", () => {
+		it("should respect XML user preference for OpenAI Compatible provider", () => {
+			const settings: ProviderSettings = {
+				toolProtocol: "xml",
+				apiProvider: "openai-compatible",
+			}
+			const result = resolveToolProtocol(settings)
+			expect(result).toBe(TOOL_PROTOCOL.XML)
+		})
+
+		it("should respect Native user preference for OpenAI Compatible provider", () => {
+			const settings: ProviderSettings = {
+				toolProtocol: "native",
+				apiProvider: "openai-compatible",
+			}
+			const result = resolveToolProtocol(settings)
+			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
+		})
+
+		it("should default to Native when no preference for OpenAI Compatible provider", () => {
+			const settings: ProviderSettings = {
+				apiProvider: "openai-compatible",
+			}
+			const result = resolveToolProtocol(settings)
+			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
+		})
+
+		it("should respect XML user preference for LiteLLM provider", () => {
+			const settings: ProviderSettings = {
+				toolProtocol: "xml",
+				apiProvider: "litellm",
+			}
+			const result = resolveToolProtocol(settings)
+			expect(result).toBe(TOOL_PROTOCOL.XML)
+		})
+
+		it("should respect Native user preference for LiteLLM provider", () => {
+			const settings: ProviderSettings = {
+				toolProtocol: "native",
+				apiProvider: "litellm",
+			}
+			const result = resolveToolProtocol(settings)
+			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
+		})
+
+		it("should default to Native when no preference for LiteLLM provider", () => {
+			const settings: ProviderSettings = {
+				apiProvider: "litellm",
+			}
+			const result = resolveToolProtocol(settings)
+			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
+		})
+
+		it("should still honor locked protocol over user preference for openai-compatible", () => {
+			const settings: ProviderSettings = {
+				toolProtocol: "xml",
+				apiProvider: "openai-compatible",
+			}
+			// lockedProtocol takes precedence
+			const result = resolveToolProtocol(settings, undefined, "native")
+			expect(result).toBe(TOOL_PROTOCOL.NATIVE)
+		})
+
+		it("should still honor locked protocol over user preference for litellm", () => {
+			const settings: ProviderSettings = {
+				toolProtocol: "native",
+				apiProvider: "litellm",
+			}
+			// lockedProtocol takes precedence
+			const result = resolveToolProtocol(settings, undefined, "xml")
+			expect(result).toBe(TOOL_PROTOCOL.XML)
 		})
 	})
 })
