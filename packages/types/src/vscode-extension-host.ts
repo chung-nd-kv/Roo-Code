@@ -1,68 +1,29 @@
-import type {
-	GlobalSettings,
-	ProviderSettingsEntry,
-	ProviderSettings,
-	HistoryItem,
-	ModeConfig,
-	TelemetrySetting,
-	Experiments,
-	ClineMessage,
-	MarketplaceItem,
-	TodoItem,
-	CloudUserInfo,
-	CloudOrganizationMembership,
-	OrganizationAllowList,
-	ShareVisibility,
-	QueuedMessage,
-	SerializedCustomToolDefinition,
-} from "@roo-code/types"
+import { z } from "zod"
 
-import { GitCommit } from "../utils/git"
+import type { GlobalSettings, RooCodeSettings } from "./global-settings.js"
+import type { ProviderSettings, ProviderSettingsEntry } from "./provider-settings.js"
+import type { HistoryItem } from "./history.js"
+import type { ModeConfig, PromptComponent } from "./mode.js"
+import type { TelemetrySetting } from "./telemetry.js"
+import type { Experiments } from "./experiment.js"
+import type { ClineMessage, QueuedMessage } from "./message.js"
+import {
+	type MarketplaceItem,
+	type MarketplaceInstalledMetadata,
+	type InstallMarketplaceItemOptions,
+	marketplaceItemSchema,
+} from "./marketplace.js"
+import type { TodoItem } from "./todo.js"
+import type { CloudUserInfo, CloudOrganizationMembership, OrganizationAllowList, ShareVisibility } from "./cloud.js"
+import type { SerializedCustomToolDefinition } from "./custom-tool.js"
+import type { GitCommit } from "./git.js"
+import type { McpServer } from "./mcp.js"
+import type { ModelRecord, RouterModels } from "./model.js"
 
-import { McpServer } from "./mcp"
-import { Mode } from "./modes"
-import { ModelRecord, RouterModels } from "./api"
-
-// Command interface for frontend/backend communication
-export interface Command {
-	name: string
-	source: "global" | "project" | "built-in"
-	filePath?: string
-	description?: string
-	argumentHint?: string
-}
-
-// Type for marketplace installed metadata
-export interface MarketplaceInstalledMetadata {
-	project: Record<string, { type: string }>
-	global: Record<string, { type: string }>
-}
-
-// Indexing status types
-export interface IndexingStatus {
-	systemStatus: string
-	message?: string
-	processedItems: number
-	totalItems: number
-	currentItemUnit?: string
-	workspacePath?: string
-}
-
-export interface IndexingStatusUpdateMessage {
-	type: "indexingStatusUpdate"
-	values: IndexingStatus
-}
-
-export interface LanguageModelChatSelector {
-	vendor?: string
-	family?: string
-	version?: string
-	id?: string
-}
-
-// Represents JSON data that is sent from extension to webview, called
-// ExtensionMessage and has 'type' enum which can be 'plusButtonClicked' or
-// 'settingsButtonClicked' or 'hello'. Webview will hold state.
+/**
+ * ExtensionMessage
+ * Extension -> Webview | CLI
+ */
 export interface ExtensionMessage {
 	type:
 		| "action"
@@ -132,9 +93,9 @@ export interface ExtensionMessage {
 		| "browserSessionNavigate"
 		| "claudeCodeRateLimits"
 		| "customToolsResult"
+		| "modes"
 	text?: string
-	payload?: any // Add a generic payload for now, can refine later
-	// Checkpoint warning message
+	payload?: any // eslint-disable-line @typescript-eslint/no-explicit-any
 	checkpointWarning?: {
 		type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"
 		timeout: number
@@ -184,18 +145,20 @@ export interface ExtensionMessage {
 	mcpServers?: McpServer[]
 	commits?: GitCommit[]
 	listApiConfig?: ProviderSettingsEntry[]
-	mode?: Mode
+	mode?: string
 	customMode?: ModeConfig
 	slug?: string
 	success?: boolean
-	values?: Record<string, any>
+	values?: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 	requestId?: string
 	promptText?: string
-	results?: { path: string; type: "file" | "folder"; label?: string }[]
+	results?:
+		| { path: string; type: "file" | "folder"; label?: string }[]
+		| { name: string; description?: string; argumentHint?: string; source: "global" | "project" | "built-in" }[]
 	error?: string
 	setting?: string
-	value?: any
-	hasContent?: boolean // For checkRulesDirectoryResult
+	value?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+	hasContent?: boolean
 	items?: MarketplaceItem[]
 	userInfo?: CloudUserInfo
 	organizationAllowList?: OrganizationAllowList
@@ -206,7 +169,7 @@ export interface ExtensionMessage {
 	errors?: string[]
 	visibility?: ShareVisibility
 	rulesFolderPath?: string
-	settings?: any
+	settings?: any // eslint-disable-line @typescript-eslint/no-explicit-any
 	messageTs?: number
 	hasCheckpoint?: boolean
 	context?: string
@@ -218,6 +181,7 @@ export interface ExtensionMessage {
 	isBrowserSessionActive?: boolean // For browser session panel updates
 	stepIndex?: number // For browserSessionNavigate: the target step index to display
 	tools?: SerializedCustomToolDefinition[] // For customToolsResult
+	modes?: { slug: string; name: string }[] // For modes response
 }
 
 export type ExtensionState = Pick<
@@ -318,7 +282,7 @@ export type ExtensionState = Pick<
 	mcpEnabled: boolean
 	enableMcpServerCreation: boolean
 
-	mode: Mode
+	mode: string
 	customModes: ModeConfig[]
 	toolRequirements?: Record<string, boolean> // Map of tool names to their requirements (e.g. {"apply_diff": true} if diffEnabled)
 
@@ -346,6 +310,7 @@ export type ExtensionState = Pick<
 	autoCondenseContext: boolean
 	autoCondenseContextPercent: number
 	marketplaceItems?: MarketplaceItem[]
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	marketplaceInstalledMetadata?: { project: Record<string, any>; global: Record<string, any> }
 	profileThresholds: Record<string, number>
 	hasOpenedModeSelector: boolean
@@ -361,6 +326,343 @@ export type ExtensionState = Pick<
 	featureRoomoteControlEnabled: boolean
 	claudeCodeIsAuthenticated?: boolean
 	debug?: boolean
+}
+
+export interface Command {
+	name: string
+	source: "global" | "project" | "built-in"
+	filePath?: string
+	description?: string
+	argumentHint?: string
+}
+
+/**
+ * WebviewMessage
+ * Webview | CLI -> Extension
+ */
+
+export type ClineAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse" | "objectResponse"
+
+export type AudioType = "notification" | "celebration" | "progress_loop"
+
+export interface UpdateTodoListPayload {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	todos: any[]
+}
+
+export type EditQueuedMessagePayload = Pick<QueuedMessage, "id" | "text" | "images">
+
+export interface WebviewMessage {
+	type:
+		| "updateTodoList"
+		| "deleteMultipleTasksWithIds"
+		| "currentApiConfigName"
+		| "saveApiConfiguration"
+		| "upsertApiConfiguration"
+		| "deleteApiConfiguration"
+		| "loadApiConfiguration"
+		| "loadApiConfigurationById"
+		| "renameApiConfiguration"
+		| "getListApiConfiguration"
+		| "customInstructions"
+		| "webviewDidLaunch"
+		| "newTask"
+		| "askResponse"
+		| "terminalOperation"
+		| "clearTask"
+		| "didShowAnnouncement"
+		| "selectImages"
+		| "exportCurrentTask"
+		| "shareCurrentTask"
+		| "showTaskWithId"
+		| "deleteTaskWithId"
+		| "exportTaskWithId"
+		| "importSettings"
+		| "exportSettings"
+		| "resetState"
+		| "flushRouterModels"
+		| "requestRouterModels"
+		| "requestOpenAiModels"
+		| "requestOllamaModels"
+		| "requestLmStudioModels"
+		| "requestRooModels"
+		| "requestRooCreditBalance"
+		| "requestVsCodeLmModels"
+		| "requestHuggingFaceModels"
+		| "openImage"
+		| "saveImage"
+		| "openFile"
+		| "openMention"
+		| "cancelTask"
+		| "cancelAutoApproval"
+		| "updateVSCodeSetting"
+		| "getVSCodeSetting"
+		| "vsCodeSetting"
+		| "updateCondensingPrompt"
+		| "playSound"
+		| "playTts"
+		| "stopTts"
+		| "ttsEnabled"
+		| "ttsSpeed"
+		| "openKeyboardShortcuts"
+		| "openMcpSettings"
+		| "openProjectMcpSettings"
+		| "restartMcpServer"
+		| "refreshAllMcpServers"
+		| "toggleToolAlwaysAllow"
+		| "toggleToolEnabledForPrompt"
+		| "toggleMcpServer"
+		| "updateMcpTimeout"
+		| "enhancePrompt"
+		| "enhancedPrompt"
+		| "draggedImages"
+		| "deleteMessage"
+		| "deleteMessageConfirm"
+		| "submitEditedMessage"
+		| "editMessageConfirm"
+		| "enableMcpServerCreation"
+		| "remoteControlEnabled"
+		| "taskSyncEnabled"
+		| "searchCommits"
+		| "setApiConfigPassword"
+		| "mode"
+		| "updatePrompt"
+		| "getSystemPrompt"
+		| "copySystemPrompt"
+		| "systemPrompt"
+		| "enhancementApiConfigId"
+		| "autoApprovalEnabled"
+		| "updateCustomMode"
+		| "deleteCustomMode"
+		| "setopenAiCustomModelInfo"
+		| "openCustomModesSettings"
+		| "checkpointDiff"
+		| "checkpointRestore"
+		| "deleteMcpServer"
+		| "codebaseIndexEnabled"
+		| "telemetrySetting"
+		| "testBrowserConnection"
+		| "browserConnectionResult"
+		| "searchFiles"
+		| "toggleApiConfigPin"
+		| "hasOpenedModeSelector"
+		| "clearCloudAuthSkipModel"
+		| "cloudButtonClicked"
+		| "rooCloudSignIn"
+		| "cloudLandingPageSignIn"
+		| "rooCloudSignOut"
+		| "rooCloudManualUrl"
+		| "claudeCodeSignIn"
+		| "claudeCodeSignOut"
+		| "switchOrganization"
+		| "condenseTaskContextRequest"
+		| "requestIndexingStatus"
+		| "startIndexing"
+		| "clearIndexData"
+		| "indexingStatusUpdate"
+		| "indexCleared"
+		| "focusPanelRequest"
+		| "openExternal"
+		| "filterMarketplaceItems"
+		| "marketplaceButtonClicked"
+		| "installMarketplaceItem"
+		| "installMarketplaceItemWithParameters"
+		| "cancelMarketplaceInstall"
+		| "removeInstalledMarketplaceItem"
+		| "marketplaceInstallResult"
+		| "fetchMarketplaceData"
+		| "switchTab"
+		| "shareTaskSuccess"
+		| "exportMode"
+		| "exportModeResult"
+		| "importMode"
+		| "importModeResult"
+		| "checkRulesDirectory"
+		| "checkRulesDirectoryResult"
+		| "saveCodeIndexSettingsAtomic"
+		| "requestCodeIndexSecretStatus"
+		| "requestCommands"
+		| "openCommandFile"
+		| "deleteCommand"
+		| "createCommand"
+		| "insertTextIntoTextarea"
+		| "showMdmAuthRequiredNotification"
+		| "imageGenerationSettings"
+		| "queueMessage"
+		| "removeQueuedMessage"
+		| "editQueuedMessage"
+		| "dismissUpsell"
+		| "getDismissedUpsells"
+		| "updateSettings"
+		| "allowedCommands"
+		| "deniedCommands"
+		| "killBrowserSession"
+		| "openBrowserSessionPanel"
+		| "showBrowserSessionPanelAtStep"
+		| "refreshBrowserSessionPanel"
+		| "browserPanelDidLaunch"
+		| "openDebugApiHistory"
+		| "openDebugUiHistory"
+		| "downloadErrorDiagnostics"
+		| "requestClaudeCodeRateLimits"
+		| "refreshCustomTools"
+		| "requestModes"
+		| "switchMode"
+		| "debugSetting"
+	text?: string
+	editedMessageContent?: string
+	tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "cloud"
+	disabled?: boolean
+	context?: string
+	dataUri?: string
+	askResponse?: ClineAskResponse
+	apiConfiguration?: ProviderSettings
+	images?: string[]
+	bool?: boolean
+	value?: number
+	stepIndex?: number
+	isLaunchAction?: boolean
+	forceShow?: boolean
+	commands?: string[]
+	audioType?: AudioType
+	serverName?: string
+	toolName?: string
+	alwaysAllow?: boolean
+	isEnabled?: boolean
+	mode?: string
+	promptMode?: string | "enhance"
+	customPrompt?: PromptComponent
+	dataUrls?: string[]
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	values?: Record<string, any>
+	query?: string
+	setting?: string
+	slug?: string
+	modeConfig?: ModeConfig
+	timeout?: number
+	payload?: WebViewMessagePayload
+	source?: "global" | "project"
+	requestId?: string
+	ids?: string[]
+	hasSystemPromptOverride?: boolean
+	terminalOperation?: "continue" | "abort"
+	messageTs?: number
+	restoreCheckpoint?: boolean
+	historyPreviewCollapsed?: boolean
+	filters?: { type?: string; search?: string; tags?: string[] }
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	settings?: any
+	url?: string // For openExternal
+	mpItem?: MarketplaceItem
+	mpInstallOptions?: InstallMarketplaceItemOptions
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	config?: Record<string, any> // Add config to the payload
+	visibility?: ShareVisibility // For share visibility
+	hasContent?: boolean // For checkRulesDirectoryResult
+	checkOnly?: boolean // For deleteCustomMode check
+	upsellId?: string // For dismissUpsell
+	list?: string[] // For dismissedUpsells response
+	organizationId?: string | null // For organization switching
+	useProviderSignup?: boolean // For rooCloudSignIn to use provider signup flow
+	codeIndexSettings?: {
+		// Global state settings
+		codebaseIndexEnabled: boolean
+		codebaseIndexQdrantUrl: string
+		codebaseIndexEmbedderProvider:
+			| "openai"
+			| "ollama"
+			| "openai-compatible"
+			| "gemini"
+			| "mistral"
+			| "vercel-ai-gateway"
+			| "bedrock"
+			| "openrouter"
+		codebaseIndexEmbedderBaseUrl?: string
+		codebaseIndexEmbedderModelId: string
+		codebaseIndexEmbedderModelDimension?: number // Generic dimension for all providers
+		codebaseIndexOpenAiCompatibleBaseUrl?: string
+		codebaseIndexBedrockRegion?: string
+		codebaseIndexBedrockProfile?: string
+		codebaseIndexSearchMaxResults?: number
+		codebaseIndexSearchMinScore?: number
+		codebaseIndexOpenRouterSpecificProvider?: string // OpenRouter provider routing
+
+		// Secret settings
+		codeIndexOpenAiKey?: string
+		codeIndexQdrantApiKey?: string
+		codebaseIndexOpenAiCompatibleApiKey?: string
+		codebaseIndexGeminiApiKey?: string
+		codebaseIndexMistralApiKey?: string
+		codebaseIndexVercelAiGatewayApiKey?: string
+		codebaseIndexOpenRouterApiKey?: string
+	}
+	updatedSettings?: RooCodeSettings
+}
+
+export const checkoutDiffPayloadSchema = z.object({
+	ts: z.number().optional(),
+	previousCommitHash: z.string().optional(),
+	commitHash: z.string(),
+	mode: z.enum(["full", "checkpoint", "from-init", "to-current"]),
+})
+
+export type CheckpointDiffPayload = z.infer<typeof checkoutDiffPayloadSchema>
+
+export const checkoutRestorePayloadSchema = z.object({
+	ts: z.number(),
+	commitHash: z.string(),
+	mode: z.enum(["preview", "restore"]),
+})
+
+export type CheckpointRestorePayload = z.infer<typeof checkoutRestorePayloadSchema>
+
+export interface IndexingStatusPayload {
+	state: "Standby" | "Indexing" | "Indexed" | "Error"
+	message: string
+}
+
+export interface IndexClearedPayload {
+	success: boolean
+	error?: string
+}
+
+export const installMarketplaceItemWithParametersPayloadSchema = z.object({
+	item: marketplaceItemSchema,
+	parameters: z.record(z.string(), z.any()),
+})
+
+export type InstallMarketplaceItemWithParametersPayload = z.infer<
+	typeof installMarketplaceItemWithParametersPayloadSchema
+>
+
+export type WebViewMessagePayload =
+	| CheckpointDiffPayload
+	| CheckpointRestorePayload
+	| IndexingStatusPayload
+	| IndexClearedPayload
+	| InstallMarketplaceItemWithParametersPayload
+	| UpdateTodoListPayload
+	| EditQueuedMessagePayload
+
+export interface IndexingStatus {
+	systemStatus: string
+	message?: string
+	processedItems: number
+	totalItems: number
+	currentItemUnit?: string
+	workspacePath?: string
+}
+
+export interface IndexingStatusUpdateMessage {
+	type: "indexingStatusUpdate"
+	values: IndexingStatus
+}
+
+export interface LanguageModelChatSelector {
+	vendor?: string
+	family?: string
+	version?: string
+	id?: string
 }
 
 export interface ClineSayTool {
